@@ -7,7 +7,9 @@ export const useRealtimeOrders = () => {
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
 
-  // Fetch initial orders (baru & diproses) for today
+  // Fetch initial orders: 
+  // 1. Status 'baru' or 'diproses'
+  // 2. OR Status 'selesai' but payment_status 'belum_bayar'
   useEffect(() => {
     const fetchInitialOrders = async () => {
       const today = new Date();
@@ -20,7 +22,7 @@ export const useRealtimeOrders = () => {
           tables (nomor_meja),
           order_items (*)
         `)
-        .in('status', ['baru', 'diproses'])
+        .or('status.in.(baru,diproses),and(status.eq.selesai,payment_status.eq.belum_bayar)')
         .gte('created_at', today.toISOString())
         .order('created_at', { ascending: false });
 
@@ -39,7 +41,6 @@ export const useRealtimeOrders = () => {
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'orders' },
         async (payload) => {
-          // Fetch full data for the new order
           const { data, error } = await supabase
             .from('orders')
             .select(`
@@ -58,17 +59,37 @@ export const useRealtimeOrders = () => {
       .on(
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'orders' },
-        (payload) => {
-          setOrders((prev) => {
-            // If status is 'selesai' or 'dibatalkan', remove from current view
-            if (['selesai', 'dibatalkan'].includes(payload.new.status)) {
-              return prev.filter((o) => o.id !== payload.new.id);
+        async (payload) => {
+          // Check if the order should still be on dashboard
+          const isOngoing = ['baru', 'diproses'].includes(payload.new.status);
+          const isUnpaidFinished = payload.new.status === 'selesai' && payload.new.payment_status === 'belum_bayar';
+          
+          if (!isOngoing && !isUnpaidFinished) {
+            // Remove from dashboard if finished and paid or cancelled
+            setOrders((prev) => prev.filter((o) => o.id !== payload.new.id));
+          } else {
+            // Update the order in state, fetch full data if items or tables needed
+            const { data, error } = await supabase
+              .from('orders')
+              .select(`
+                *,
+                tables (nomor_meja),
+                order_items (*)
+              `)
+              .eq('id', payload.new.id)
+              .single();
+
+            if (!error && data) {
+              setOrders((prev) => {
+                const exists = prev.find(o => o.id === data.id);
+                if (exists) {
+                  return prev.map(o => o.id === data.id ? data as unknown as Order : o);
+                } else {
+                  return [data as unknown as Order, ...prev];
+                }
+              });
             }
-            // Otherwise update the order in state
-            return prev.map((o) =>
-              o.id === payload.new.id ? { ...o, ...payload.new } : o
-            );
-          });
+          }
         }
       )
       .subscribe();

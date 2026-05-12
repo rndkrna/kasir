@@ -10,6 +10,8 @@ interface OrderCardProps {
 
 export const OrderCard = ({ order, onUpdateStatus }: OrderCardProps) => {
   const [isUpdatingPayment, setIsUpdatingPayment] = useState(false);
+  const [isPaying, setIsPaying] = useState(false);
+  const [inputAmount, setInputAmount] = useState<number | ''>('');
   const supabase = createClient();
   
   const createdDate = new Date(order.created_at);
@@ -20,18 +22,28 @@ export const OrderCard = ({ order, onUpdateStatus }: OrderCardProps) => {
     return `${Math.floor(diff / 60)} jam lalu`;
   };
 
-  const togglePaymentStatus = async (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handlePayment = async () => {
+    if (typeof inputAmount !== 'number' || inputAmount < order.total) {
+      alert('Nominal bayar tidak cukup');
+      return;
+    }
+
     setIsUpdatingPayment(true);
-    const newPaymentStatus = order.payment_status === 'belum_bayar' ? 'sudah_bayar' : 'belum_bayar';
     const { error } = await supabase
       .from('orders')
-      .update({ payment_status: newPaymentStatus })
+      .update({ payment_status: 'sudah_bayar' })
       .eq('id', order.id);
 
-    if (error) alert('Gagal update pembayaran: ' + error.message);
+    if (error) {
+      alert('Gagal update pembayaran: ' + error.message);
+    } else {
+      setIsPaying(false);
+      setInputAmount('');
+    }
     setIsUpdatingPayment(false);
   };
+
+  const change = typeof inputAmount === 'number' ? inputAmount - order.total : 0;
 
   return (
     <div className="bg-surface-white rounded-xl border border-surface-border shadow-sm overflow-hidden flex flex-col h-full hover:shadow-md transition-all duration-200">
@@ -86,20 +98,71 @@ export const OrderCard = ({ order, onUpdateStatus }: OrderCardProps) => {
       </div>
 
       <div className="p-4 pt-2 space-y-3">
-        {/* Payment Status Toggle */}
-        <div className="flex justify-between items-center px-1">
-           <span className="text-[10px] font-bold text-ink-muted uppercase tracking-widest">Pembayaran</span>
-           <button 
-              onClick={togglePaymentStatus}
-              disabled={isUpdatingPayment}
-              className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase transition-all duration-150 active:scale-95 ${
-                order.payment_status === 'sudah_bayar' 
-                  ? 'bg-brand-500 text-ink-inverse' 
-                  : 'bg-surface-soft text-ink-secondary border border-surface-border hover:bg-surface-muted'
-              }`}
-            >
-              {isUpdatingPayment ? '...' : order.payment_status === 'sudah_bayar' ? 'Lunas' : 'Tagih'}
-            </button>
+        {/* Payment Section */}
+        <div className={`border-t border-surface-border pt-3 ${order.status === 'selesai' && order.payment_status === 'belum_bayar' ? 'bg-brand-50/50 -mx-4 px-4 pb-4 mt-0' : ''}`}>
+          {isPaying ? (
+            <div className="space-y-3 animate-in fade-in slide-in-from-top-1 duration-200 py-2">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[9px] font-bold text-ink-muted uppercase tracking-widest">Nominal Bayar</label>
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    autoFocus
+                    value={inputAmount}
+                    onChange={(e) => setInputAmount(e.target.value ? parseInt(e.target.value) : '')}
+                    className="flex-1 h-9 px-3 rounded-lg bg-white border border-brand-200 text-sm font-bold text-ink-primary outline-none focus:border-brand-500 transition-all shadow-sm"
+                    placeholder="Rp..."
+                  />
+                  <button 
+                    onClick={handlePayment}
+                    disabled={isUpdatingPayment || !inputAmount || inputAmount < order.total}
+                    className="h-9 px-4 bg-brand-500 text-white rounded-lg text-xs font-bold hover:bg-brand-600 disabled:opacity-50 transition-all shadow-sm"
+                  >
+                    Bayar
+                  </button>
+                  <button 
+                    onClick={() => { setIsPaying(false); setInputAmount(''); }}
+                    className="h-9 px-3 bg-surface-muted text-ink-secondary rounded-lg text-xs font-bold hover:bg-surface-border transition-all"
+                  >
+                    Batal
+                  </button>
+                </div>
+              </div>
+              {typeof inputAmount === 'number' && inputAmount >= order.total && (
+                <div className="flex justify-between items-center px-3 py-2 bg-green-500 text-white rounded-lg shadow-md animate-in zoom-in duration-200">
+                  <span className="text-[10px] font-bold uppercase tracking-widest opacity-90">Kembalian</span>
+                  <span className="text-base font-mono font-bold">{formatRupiah(change)}</span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex justify-between items-center px-1">
+              <div className="flex flex-col">
+                <span className="text-[10px] font-bold text-ink-muted uppercase tracking-widest">Pembayaran</span>
+                {order.status === 'selesai' && order.payment_status === 'belum_bayar' && (
+                  <span className="text-[9px] text-brand-600 font-bold animate-pulse">Menunggu Pembayaran</span>
+                )}
+              </div>
+              <button 
+                onClick={() => {
+                  if (order.payment_status === 'sudah_bayar') {
+                    if (confirm('Ubah status menjadi Belum Bayar?')) {
+                      supabase.from('orders').update({ payment_status: 'belum_bayar' }).eq('id', order.id).then();
+                    }
+                  } else {
+                    setIsPaying(true);
+                  }
+                }}
+                className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-all duration-150 active:scale-95 shadow-sm ${
+                  order.payment_status === 'sudah_bayar' 
+                    ? 'bg-brand-500 text-ink-inverse' 
+                    : 'bg-white text-brand-600 border border-brand-200 hover:bg-brand-50'
+                }`}
+              >
+                {order.payment_status === 'sudah_bayar' ? 'Lunas' : 'Tagih Bayar'}
+              </button>
+            </div>
+          )}
         </div>
 
         {order.status !== 'selesai' && (

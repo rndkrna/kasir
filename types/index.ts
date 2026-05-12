@@ -18,6 +18,29 @@ export interface MenuItem {
   is_available: boolean;
   urutan: number;
   created_at: string;
+  // Relation
+  modifier_groups?: ModifierGroup[];
+}
+
+export interface ModifierGroup {
+  id: string;
+  nama: string;
+  tipe: 'single' | 'multiple';
+  is_required: boolean;
+  urutan: number;
+  created_at: string;
+  // Relation
+  modifier_options?: ModifierOption[];
+}
+
+export interface ModifierOption {
+  id: string;
+  group_id: string;
+  nama: string;
+  harga_tambahan: number;
+  is_available: boolean;
+  urutan: number;
+  created_at: string;
 }
 
 export interface Order {
@@ -45,4 +68,15 @@ export interface OrderItem {
   created_at: string;
   // Optional relations
   menus?: MenuItem;
+  order_item_modifiers?: OrderItemModifier[];
+}
+
+export interface OrderItemModifier {
+  id: string;
+  order_item_id: string;
+  group_id: string;
+  option_id: string;
+  nama_group: string;
+  nama_option: string;
+  created_at: string;
 }

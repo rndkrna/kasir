@@ -8,6 +8,8 @@ import { MenuCard } from '@/components/customer/MenuCard';
 import { CategoryTabs } from '@/components/customer/CategoryTabs';
 import { CartBar } from '@/components/customer/CartBar';
 import { useCart } from '@/hooks/useCart';
+import { MenuItemModal } from '@/components/customer/MenuItemModal';
+import { ModifierGroup, ModifierOption } from '@/types';
 
 function MenuContent() {
   const searchParams = useSearchParams();
@@ -19,6 +21,8 @@ function MenuContent() {
   const [activeCategory, setActiveCategory] = useState('semua');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [selectedItemForModal, setSelectedItemForModal] = useState<MenuItem | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     items,
@@ -31,15 +35,44 @@ function MenuContent() {
     totalPrice,
   } = useCart();
 
+  const handleAddClick = (item: MenuItem) => {
+    if (item.modifier_groups && item.modifier_groups.length > 0) {
+      setSelectedItemForModal(item);
+      setIsModalOpen(true);
+    } else {
+      addToCart(item);
+    }
+  };
+
   useEffect(() => {
     async function fetchMenus() {
       const { data, error } = await supabase
         .from('menus')
-        .select('*')
+        .select(`
+          *,
+          menu_modifier_groups (
+            modifier_groups (
+              *,
+              modifier_options (*)
+            )
+          )
+        `)
         .order('urutan', { ascending: true });
 
       if (!error && data) {
-        setMenus(data);
+        const formattedMenus = data.map((m: any) => {
+          // Robust mapping for modifier_groups
+          const modifier_groups = (m.menu_modifier_groups || [])
+            .map((mmg: any) => {
+              const group = mmg.modifier_groups;
+              return Array.isArray(group) ? group[0] : group;
+            })
+            .filter(Boolean)
+            .sort((a: any, b: any) => a.urutan - b.urutan);
+
+          return { ...m, modifier_groups };
+        });
+        setMenus(formattedMenus);
       }
       setLoading(false);
     }
@@ -87,19 +120,55 @@ function MenuContent() {
 
       if (orderError || !orderData) throw orderError;
 
-      const orderItems = items.map((item) => ({
-        order_id: orderData.id,
-        menu_id: item.id,
-        nama_menu: item.nama,
-        harga_saat_pesan: item.harga,
-        qty: item.qty,
-      }));
+      // Save order items and their modifiers
+      for (const item of items) {
+        const { data: orderItemData, error: itemError } = await supabase
+          .from('order_items')
+          .insert({
+            order_id: orderData.id,
+            menu_id: item.id,
+            nama_menu: item.nama,
+            harga_saat_pesan: item.harga,
+            qty: item.qty,
+          })
+          .select()
+          .single();
 
-      const { error: itemsError } = await supabase
-        .from('order_items')
-        .insert(orderItems);
+        if (itemError) throw itemError;
 
-      if (itemsError) throw itemsError;
+        // Save modifiers if any
+        if (item.selectedOptions && item.selectedOptions.length > 0) {
+          const modifierRelations = item.selectedOptions.map(optionId => {
+            // Find group and option name for snapshot
+            let groupName = '';
+            let optionName = '';
+            let groupId = '';
+
+            item.modifier_groups?.forEach(g => {
+              const opt = g.modifier_options?.find(o => o.id === optionId);
+              if (opt) {
+                groupName = g.nama;
+                optionName = opt.nama;
+                groupId = g.id;
+              }
+            });
+
+            return {
+              order_item_id: orderItemData.id,
+              group_id: groupId,
+              option_id: optionId,
+              nama_group: groupName,
+              nama_option: optionName
+            };
+          });
+
+          const { error: modError } = await supabase
+            .from('order_item_modifiers')
+            .insert(modifierRelations);
+          
+          if (modError) throw modError;
+        }
+      }
 
       setSuccess(true);
       clearCart();
@@ -185,9 +254,10 @@ function MenuContent() {
                   <MenuCard
                     key={menu.id}
                     item={menu}
-                    qty={items.find((i) => i.id === menu.id)?.qty || 0}
-                    onAdd={addToCart}
+                    qty={items.filter((i) => i.id === menu.id).reduce((sum, i) => sum + i.qty, 0)}
+                    onAddClick={handleAddClick}
                     onRemove={removeFromCart}
+                    currentCartItems={items}
                   />
                 ))}
               </div>
@@ -203,6 +273,13 @@ function MenuContent() {
         onNotesChange={setNotes}
         onSubmit={handleSubmitOrder}
         isSubmitting={isSubmitting}
+      />
+
+      <MenuItemModal
+        item={selectedItemForModal}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAddToCart={addToCart}
       />
     </main>
   );

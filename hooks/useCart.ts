@@ -3,33 +3,41 @@ import { MenuItem } from '@/types';
 
 export interface CartItem extends MenuItem {
   qty: number;
+  selectedOptions?: string[];
+  uniqueId: string; // menuId + sorted selectedOptions
 }
 
 export const useCart = () => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [notes, setNotes] = useState('');
 
-  const addToCart = useCallback((menuItem: MenuItem) => {
+  const generateUniqueId = (menuId: string, options: string[] = []) => {
+    return `${menuId}-${[...options].sort().join('-')}`;
+  };
+
+  const addToCart = useCallback((menuItem: MenuItem, options: string[] = []) => {
+    const uniqueId = generateUniqueId(menuItem.id, options);
+    
     setItems((prev) => {
-      const existing = prev.find((item) => item.id === menuItem.id);
+      const existing = prev.find((item) => item.uniqueId === uniqueId);
       if (existing) {
         return prev.map((item) =>
-          item.id === menuItem.id ? { ...item, qty: item.qty + 1 } : item
+          item.uniqueId === uniqueId ? { ...item, qty: item.qty + 1 } : item
         );
       }
-      return [...prev, { ...menuItem, qty: 1 }];
+      return [...prev, { ...menuItem, qty: 1, selectedOptions: options, uniqueId }];
     });
   }, []);
 
-  const removeFromCart = useCallback((menuId: string) => {
+  const removeFromCart = useCallback((uniqueId: string) => {
     setItems((prev) => {
-      const existing = prev.find((item) => item.id === menuId);
+      const existing = prev.find((item) => item.uniqueId === uniqueId);
       if (existing && existing.qty > 1) {
         return prev.map((item) =>
-          item.id === menuId ? { ...item, qty: item.qty - 1 } : item
+          item.uniqueId === uniqueId ? { ...item, qty: item.qty - 1 } : item
         );
       }
-      return prev.filter((item) => item.id !== menuId);
+      return prev.filter((item) => item.uniqueId !== uniqueId);
     });
   }, []);
 
