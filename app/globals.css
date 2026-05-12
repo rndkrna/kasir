@@ -1,32 +1,60 @@
 @import "tailwindcss";
 
+@theme {
+  --color-brand-50: #FDF8F2;
+  --color-brand-100: #F5E6D0;
+  --color-brand-200: #E8C99A;
+  --color-brand-500: #C27C3A;
+  --color-brand-600: #A8612A;
+  --color-brand-700: #8B4E1F;
+  --color-brand-900: #3D1F0A;
+
+  --color-surface-white: #FFFFFF;
+  --color-surface-soft: #FAFAF9;
+  --color-surface-muted: #F3F2F0;
+  --color-surface-border: #E5E3DF;
+
+  --color-ink-primary: #1A1A1A;
+  --color-ink-secondary: #6B6560;
+  --color-ink-muted: #9E9891;
+  --color-ink-inverse: #FFFFFF;
+
+  --color-status-baru-bg: #EFF6FF;
+  --color-status-baru-text: #1D4ED8;
+  --color-status-baru-border: #BFDBFE;
+
+  --color-status-diproses-bg: #FFFBEB;
+  --color-status-diproses-text: #92400E;
+  --color-status-diproses-border: #FDE68A;
+
+  --color-status-selesai-bg: #F0FDF4;
+  --color-status-selesai-text: #166534;
+  --color-status-selesai-border: #BBF7D0;
+
+  --color-status-habis-bg: #FEF2F2;
+  --color-status-habis-text: #991B1B;
+  --color-status-habis-border: #FECACA;
+
+  --font-sans: var(--font-plus-jakarta-sans), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
+
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+}
+
 @layer base {
   :root {
-    --background: #FDF8F2; /* brand-50 */
-    --foreground: #1A1A1A; /* ink-primary */
-    
-    --primary: #C27C3A; /* brand-500 */
-    --primary-foreground: #FFFFFF; /* ink-inverse */
-    
-    --secondary: #F3F2F0; /* surface-muted */
-    --secondary-foreground: #1A1A1A; /* ink-primary */
-    
-    --surface: #FFFFFF;
-    --on-surface: #1A1A1A;
-    
-    --radius-xl: 0.75rem;
-    --radius-lg: 0.5rem;
-    --radius-md: 0.375rem;
-    --radius-sm: 0.25rem;
+    --background: #FDF8F2;
+    --foreground: #1A1A1A;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: var(--font-sans);
 }
 
-/* Custom scrollbar matching the theme */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }

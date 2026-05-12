@@ -8,41 +8,48 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        brand: {
-          50:  '#FDF8F2',   // background halaman customer
-          100: '#F5E6D0',   // hover ringan
-          200: '#E8C99A',   // border aksen
-          500: '#C27C3A',   // warna utama (tombol primer, aksen)
-          600: '#A8612A',   // hover tombol primer
-          700: '#8B4E1F',   // active / pressed
-          900: '#3D1F0A',   // teks gelap di atas background terang
-        },
-        surface: {
-          white:  '#FFFFFF',
-          soft:   '#FAFAF9',   // background halaman kasir/admin
-          muted:  '#F3F2F0',   // background card secondary
-          border: '#E5E3DF',   // semua border default
-        },
-        ink: {
-          primary:   '#1A1A1A',   // teks utama
-          secondary: '#6B6560',   // teks sekunder / label
-          muted:     '#9E9891',   // placeholder, hint
-          inverse:   '#FFFFFF',   // teks di atas background gelap
-        },
-        status: {
-          baru:     { bg: '#EFF6FF', text: '#1D4ED8', border: '#BFDBFE' },
-          diproses: { bg: '#FFFBEB', text: '#92400E', border: '#FDE68A' },
-          selesai:  { bg: '#F0FDF4', text: '#166534', border: '#BBF7D0' },
-          habis:    { bg: '#FEF2F2', text: '#991B1B', border: '#FECACA' },
-        }
+        // Flattened structure for better reliability in production builds
+        'brand-50': '#FDF8F2',
+        'brand-100': '#F5E6D0',
+        'brand-200': '#E8C99A',
+        'brand-500': '#C27C3A',
+        'brand-600': '#A8612A',
+        'brand-700': '#8B4E1F',
+        'brand-900': '#3D1F0A',
+        
+        'surface-white': '#FFFFFF',
+        'surface-soft': '#FAFAF9',
+        'surface-muted': '#F3F2F0',
+        'surface-border': '#E5E3DF',
+        
+        'ink-primary': '#1A1A1A',
+        'ink-secondary': '#6B6560',
+        'ink-muted': '#9E9891',
+        'ink-inverse': '#FFFFFF',
+        
+        'status-baru-bg': '#EFF6FF',
+        'status-baru-text': '#1D4ED8',
+        'status-baru-border': '#BFDBFE',
+        
+        'status-diproses-bg': '#FFFBEB',
+        'status-diproses-text': '#92400E',
+        'status-diproses-border': '#FDE68A',
+        
+        'status-selesai-bg': '#F0FDF4',
+        'status-selesai-text': '#166534',
+        'status-selesai-border': '#BBF7D0',
+        
+        'status-habis-bg': '#FEF2F2',
+        'status-habis-text': '#991B1B',
+        'status-habis-border': '#FECACA',
       },
       fontFamily: {
         sans: ['var(--font-plus-jakarta-sans)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-jetbrains-mono)', 'monospace'],
       },
       borderRadius: {
-        xl: '0.75rem', // Sesuai standard xl Tailwind (12px)
-        '2xl': '1rem', // Untuk modal
+        xl: '0.75rem',
+        '2xl': '1rem',
       }
     },
   },
