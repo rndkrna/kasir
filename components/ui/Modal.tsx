@@ -25,20 +25,20 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Overlay */}
       <div 
-        className="absolute inset-0 bg-ink/40 backdrop-blur-sm transition-opacity" 
+        className="absolute inset-0 bg-ink-primary/60 backdrop-blur-md transition-opacity duration-300" 
         onClick={onClose}
       />
       
       {/* Container */}
-      <div className="relative bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
-        <div className="p-6 border-b border-surface-container flex items-center justify-between bg-surface">
-          {title && <h3 className="text-xl font-bold text-ink">{title}</h3>}
+      <div className="relative bg-surface-white w-full max-w-md rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in slide-in-from-bottom-4 duration-300 border border-surface-border">
+        <div className="p-5 md:px-6 border-b border-surface-border flex items-center justify-between bg-surface-soft/50">
+          {title && <h3 className="text-xl font-bold text-ink-primary tracking-tight font-sans">{title}</h3>}
           <button 
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-surface-container text-ink-variant transition-colors"
+            className="p-2 rounded-lg hover:bg-surface-muted text-ink-secondary transition-colors"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>

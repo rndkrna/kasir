@@ -66,7 +66,6 @@ function MenuContent() {
     setIsSubmitting(true);
 
     try {
-      // 1. Get Table UUID
       const { data: tableData, error: tableError } = await supabase
         .from('tables')
         .select('id')
@@ -75,7 +74,6 @@ function MenuContent() {
 
       if (tableError || !tableData) throw new Error('Meja tidak ditemukan');
 
-      // 2. Insert Order
       const { data: orderData, error: orderError } = await supabase
         .from('orders')
         .insert({
@@ -89,7 +87,6 @@ function MenuContent() {
 
       if (orderError || !orderData) throw orderError;
 
-      // 3. Insert Order Items
       const orderItems = items.map((item) => ({
         order_id: orderData.id,
         menu_id: item.id,
@@ -104,7 +101,6 @@ function MenuContent() {
 
       if (itemsError) throw itemsError;
 
-      // Success
       setSuccess(true);
       clearCart();
     } catch (error: unknown) {
@@ -118,25 +114,25 @@ function MenuContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fafaf5] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-[#385e16] border-t-transparent rounded-full animate-spin"></div>
+      <div className="min-h-screen bg-surface-soft flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   if (success) {
     return (
-      <div className="min-h-screen bg-[#fafaf5] flex flex-col items-center justify-center p-6 text-center">
-        <div className="w-20 h-20 bg-[#cefda3] rounded-full flex items-center justify-center mb-4">
-          <svg className="w-10 h-10 text-[#385e16]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="min-h-screen bg-surface-soft flex flex-col items-center justify-center p-6 text-center font-sans">
+        <div className="w-20 h-20 bg-status-selesai-bg border border-status-selesai-border rounded-full flex items-center justify-center mb-6 shadow-lg shadow-brand-500/5">
+          <svg className="w-10 h-10 text-status-selesai-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h1 className="text-2xl font-bold text-[#1a1c19] mb-2">Pesanan Terkirim!</h1>
-        <p className="text-[#43493c]">Silakan tunggu, pesanan Anda sedang kami siapkan.</p>
+        <h1 className="text-2xl font-bold text-ink-primary mb-2">Pesanan Terkirim!</h1>
+        <p className="text-sm text-ink-secondary max-w-[250px]">Silakan tunggu sebentar, pesanan Anda sedang kami siapkan.</p>
         <button
           onClick={() => setSuccess(false)}
-          className="mt-8 text-[#385e16] font-semibold underline"
+          className="mt-10 px-8 py-3 bg-brand-500 text-ink-inverse rounded-lg font-bold text-sm shadow-md shadow-brand-500/20 active:scale-95 transition-all"
         >
           Pesan Lagi
         </button>
@@ -145,20 +141,25 @@ function MenuContent() {
   }
 
   return (
-    <main className="min-h-screen bg-brand-50 pb-40 font-sans">
-      <header className="p-6 pb-2 sticky top-0 bg-brand-50/80 backdrop-blur-md z-30">
+    <main className="min-h-screen bg-surface-soft pb-40 font-sans max-w-md mx-auto shadow-2xl shadow-black/5 relative">
+      <header className="p-6 pb-2 sticky top-0 bg-surface-white/90 backdrop-blur-md z-30 border-b border-surface-border">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-black text-brand-500 tracking-tighter uppercase italic">Artisan Brews</h1>
-          <button className="p-2 text-ink-primary hover:bg-brand-100 rounded-full transition-colors">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </button>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center shadow-md shadow-brand-500/20">
+              <span className="text-ink-inverse text-xs font-bold">K</span>
+            </div>
+            <h1 className="text-xl font-bold text-brand-500 tracking-tight">KAFÉ POS</h1>
+          </div>
+          <div className="flex items-center gap-3">
+             <div className="px-3 py-1 bg-brand-50 border border-brand-100 rounded-full">
+                <span className="text-[10px] font-bold text-brand-500 uppercase tracking-widest">Meja {tableNumber}</span>
+             </div>
+          </div>
         </div>
         
         <div className="mb-4">
-          <h2 className="text-3xl font-black text-ink-primary">Our Menu</h2>
-          <p className="text-ink-secondary text-sm mt-1 leading-tight">Discover our carefully crafted beverages and bites.</p>
+          <h2 className="text-2xl font-bold text-ink-primary tracking-tight">Daftar Menu</h2>
+          <p className="text-ink-secondary text-xs mt-1 leading-tight">Pilih kopi dan makanan favorit Anda hari ini.</p>
         </div>
 
         <div className="mt-6">
@@ -170,7 +171,7 @@ function MenuContent() {
         </div>
       </header>
 
-      <div className="p-4 mt-2 space-y-8">
+      <div className="p-4 mt-2 space-y-10">
         {categories.filter(c => c !== 'semua').map(cat => {
           const itemsInCategory = filteredMenus.filter(m => m.kategori === cat);
           if (itemsInCategory.length === 0) return null;
@@ -178,10 +179,10 @@ function MenuContent() {
 
           return (
             <div key={cat} className="space-y-4">
-              <h2 className="text-xl font-bold text-[#1a1c19] px-2 border-l-4 border-[#385e16] ml-1">
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              <h2 className="text-sm font-bold text-ink-primary px-3 py-1 bg-surface-muted inline-block rounded-md uppercase tracking-widest">
+                {cat}
               </h2>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-3">
                 {itemsInCategory.map((menu) => (
                   <MenuCard
                     key={menu.id}
@@ -212,8 +213,8 @@ function MenuContent() {
 export default function CustomerMenuPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#fafaf5] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-[#385e16] border-t-transparent rounded-full animate-spin"></div>
+      <div className="min-h-screen bg-surface-soft flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     }>
       <MenuContent />

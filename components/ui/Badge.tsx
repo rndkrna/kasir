@@ -7,15 +7,15 @@ interface BadgeProps {
 }
 
 export const Badge = ({ children, variant = 'default', className = '' }: BadgeProps) => {
-  const baseStyles = 'px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider inline-flex items-center justify-center';
+  const baseStyles = 'px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest inline-flex items-center justify-center font-sans';
   
   const variants = {
-    baru: 'bg-[#ffca98] text-[#7a532a]',
-    diproses: 'bg-[#cefda3] text-[#2b5008]',
-    selesai: 'bg-[#c2f198] text-[#0c2000]',
-    dibatalkan: 'bg-[#ffdad6] text-[#93000a]',
-    habis: 'bg-[#ffdad6] text-[#93000a]',
-    default: 'bg-[#eeeee9] text-[#43493c]',
+    baru: 'bg-status-baru-bg text-status-baru-text border border-status-baru-border',
+    diproses: 'bg-status-diproses-bg text-status-diproses-text border border-status-diproses-border',
+    selesai: 'bg-status-selesai-bg text-status-selesai-text border border-status-selesai-border',
+    dibatalkan: 'bg-status-habis-bg text-status-habis-text border border-status-habis-border',
+    habis: 'bg-status-habis-bg text-status-habis-text border border-status-habis-border',
+    default: 'bg-surface-soft text-ink-secondary border border-surface-border',
   };
 
   return (

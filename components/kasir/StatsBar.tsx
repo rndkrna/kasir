@@ -7,14 +7,14 @@ interface StatsBarProps {
 
 export const StatsBar = ({ totalOrders, totalRevenue }: StatsBarProps) => {
   return (
-    <div className="grid grid-cols-2 gap-4 p-4 bg-white border-b border-[#eeeee9]">
-      <div className="bg-[#fafaf5] p-4 rounded-xl border border-[#eeeee9]">
-        <span className="text-xs font-bold text-[#43493c] uppercase tracking-wider block mb-1">Total Pesanan</span>
-        <span className="text-2xl font-bold text-[#1a1c19]">{totalOrders}</span>
+    <div className="grid grid-cols-2 gap-4 p-4 md:p-6 bg-surface-white border-b border-surface-border">
+      <div className="bg-surface-soft p-4 rounded-xl border border-surface-border shadow-sm">
+        <span className="text-[10px] font-bold text-ink-secondary uppercase tracking-widest block mb-1">Total Pesanan</span>
+        <span className="text-2xl font-bold text-ink-primary">{totalOrders}</span>
       </div>
-      <div className="bg-[#f4f4ef] p-4 rounded-xl border border-[#eeeee9]">
-        <span className="text-xs font-bold text-[#43493c] uppercase tracking-wider block mb-1">Pendapatan</span>
-        <span className="text-2xl font-bold font-mono text-[#385e16]">{formatRupiah(totalRevenue)}</span>
+      <div className="bg-surface-soft p-4 rounded-xl border border-surface-border shadow-sm">
+        <span className="text-[10px] font-bold text-ink-secondary uppercase tracking-widest block mb-1">Total Pendapatan</span>
+        <span className="text-2xl font-bold font-mono text-brand-500">{formatRupiah(totalRevenue)}</span>
       </div>
     </div>
   );

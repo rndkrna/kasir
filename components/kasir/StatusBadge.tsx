@@ -6,14 +6,14 @@ interface StatusBadgeProps {
 
 export const StatusBadge = ({ status }: StatusBadgeProps) => {
   const styles = {
-    baru: 'bg-[#ffca98] text-[#7a532a]',
-    diproses: 'bg-[#cefda3] text-[#2b5008]',
-    selesai: 'bg-[#c2f198] text-[#0c2000]',
-    dibatalkan: 'bg-[#ffdad6] text-[#93000a]',
+    baru: 'bg-status-baru-bg text-status-baru-text border-status-baru-border',
+    diproses: 'bg-status-diproses-bg text-status-diproses-text border-status-diproses-border',
+    selesai: 'bg-status-selesai-bg text-status-selesai-text border-status-selesai-border',
+    dibatalkan: 'bg-status-habis-bg text-status-habis-text border-status-habis-border',
   };
 
   return (
-    <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${styles[status]}`}>
+    <span className={`px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest border font-sans ${styles[status]}`}>
       {status}
     </span>
   );

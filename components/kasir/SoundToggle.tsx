@@ -7,10 +7,10 @@ export const SoundToggle = ({ isEnabled, onToggle }: SoundToggleProps) => {
   return (
     <button
       onClick={onToggle}
-      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-colors ${
+      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all active:scale-95 ${
         isEnabled
-          ? 'bg-[#cefda3] border-[#385e16] text-[#2b5008]'
-          : 'bg-[#fafaf5] border-[#eeeee9] text-[#43493c]'
+          ? 'bg-status-diproses-bg border-status-diproses-border text-status-diproses-text'
+          : 'bg-surface-soft border-surface-border text-ink-muted'
       }`}
       title={isEnabled ? 'Matikan Suara' : 'Aktifkan Suara'}
     >
@@ -26,8 +26,8 @@ export const SoundToggle = ({ isEnabled, onToggle }: SoundToggleProps) => {
           </svg>
         )}
       </div>
-      <span className="text-xs font-bold uppercase tracking-tight">
-        {isEnabled ? 'Bunyi On' : 'Bunyi Off'}
+      <span className="text-[10px] font-bold uppercase tracking-widest">
+        {isEnabled ? 'Sound On' : 'Sound Off'}
       </span>
     </button>
   );

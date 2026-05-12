@@ -28,7 +28,6 @@ export default function LoginPage() {
       setError(error.message);
       setLoading(false);
     } else {
-      // Check role and redirect
       const role = data.user?.user_metadata?.role;
       if (role === 'admin') {
         router.push('/laporan');
@@ -39,14 +38,17 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface flex flex-col items-center justify-center p-6 font-sans">
-      <div className="w-full max-w-md bg-surface-container-lowest p-8 rounded-2xl shadow-sm border border-surface-container">
+    <div className="min-h-screen bg-surface-soft flex flex-col items-center justify-center p-6 font-sans">
+      <div className="w-full max-w-sm bg-surface-white p-8 rounded-xl shadow-xl shadow-brand-500/5 border border-surface-border">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-ink">KAFÉ POS</h1>
-          <p className="text-ink-variant mt-2 font-medium">Portal Staff & Admin</p>
+          <div className="w-16 h-16 bg-brand-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-brand-500/20">
+            <span className="text-ink-inverse text-2xl font-bold">K</span>
+          </div>
+          <h1 className="text-2xl font-bold text-ink-primary tracking-tight">KAFÉ POS</h1>
+          <p className="text-ink-secondary text-sm mt-1 uppercase tracking-widest font-semibold">Portal Staff & Admin</p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-6">
+        <form onSubmit={handleLogin} className="space-y-5">
           <Input
             label="Email"
             type="email"
@@ -65,7 +67,7 @@ export default function LoginPage() {
           />
 
           {error && (
-            <div className="bg-error-container text-error-onContainer text-xs p-3 rounded-lg font-bold">
+            <div className="bg-status-habis-bg text-status-habis-text text-[11px] p-3 rounded-lg font-bold border border-status-habis-border uppercase tracking-tight">
               {error}
             </div>
           )}
@@ -75,10 +77,15 @@ export default function LoginPage() {
             fullWidth
             loading={loading}
             disabled={loading}
+            className="bg-brand-500 hover:bg-brand-600 text-ink-inverse h-12 rounded-lg font-bold shadow-lg shadow-brand-500/10"
           >
-            {loading ? 'Masuk...' : 'Sign In'}
+            {loading ? 'Masuk...' : 'Masuk ke Sistem'}
           </Button>
         </form>
+        
+        <p className="mt-8 text-center text-[10px] text-ink-muted uppercase tracking-widest font-bold">
+          &copy; 2026 Kafé POS System
+        </p>
       </div>
     </div>
   );
