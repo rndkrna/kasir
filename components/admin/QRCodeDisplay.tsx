@@ -37,15 +37,15 @@ export const QRCodeDisplay = ({ tableNumber }: QRCodeDisplayProps) => {
 
   if (loading) {
     return (
-      <div className="w-48 h-48 bg-[#fafaf5] rounded-xl animate-pulse flex items-center justify-center">
-        <span className="text-xs text-[#43493c]">Generating...</span>
+      <div className="w-48 h-48 bg-surface-soft rounded-xl animate-pulse flex items-center justify-center">
+        <span className="text-xs text-ink-muted">Generating...</span>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col items-center gap-3 w-full group/qr">
-      <div className="bg-[#fafaf5] p-2 rounded-xl border border-[#eeeee9] w-full flex justify-center">
+      <div className="bg-surface-white p-2 rounded-xl border border-surface-border w-full flex justify-center shadow-sm">
         <img 
           src={dataURL} 
           alt={`QR Meja ${tableNumber}`} 
