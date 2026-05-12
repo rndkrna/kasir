@@ -55,8 +55,7 @@ export default function MenuManagementPage() {
     e.preventDefault();
     const num = parseInt(newTableNum);
     const { error } = await supabase.from('tables').insert({ 
-      nomor_meja: num,
-      qr_code_url: `${window.location.origin}/menu?table=${num}`
+      nomor_meja: num
     });
     if (!error) {
       setNewTableNum('');

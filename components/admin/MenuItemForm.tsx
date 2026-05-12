@@ -33,7 +33,6 @@ export const MenuItemForm = ({ item, onSuccess, onCancel }: MenuItemFormProps) =
     try {
       let foto_url = item?.foto_url;
 
-      // Handle File Upload if new file selected
       if (file) {
         const fileExt = file.name.split('.').pop();
         const fileName = `${Math.random()}.${fileExt}`;
@@ -53,14 +52,12 @@ export const MenuItemForm = ({ item, onSuccess, onCancel }: MenuItemFormProps) =
       }
 
       if (item?.id) {
-        // Update
         const { error } = await supabase
           .from('menus')
           .update({ ...formData, foto_url })
           .eq('id', item.id);
         if (error) throw error;
       } else {
-        // Create
         const { error } = await supabase
           .from('menus')
           .insert({ ...formData, foto_url });
@@ -86,9 +83,9 @@ export const MenuItemForm = ({ item, onSuccess, onCancel }: MenuItemFormProps) =
       />
       
       <div className="flex flex-col gap-1.5">
-        <label className="text-sm font-semibold text-[#1a1c19]">Deskripsi</label>
+        <label className="text-sm font-semibold text-ink-primary">Deskripsi</label>
         <textarea
-          className="p-3 rounded-lg bg-[#fafaf5] border-2 border-[#eeeee9] text-[#1a1c19] focus:outline-none focus:border-[#385e16] min-h-[100px]"
+          className="p-3 rounded-lg bg-surface-soft border border-surface-border text-ink-primary focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 min-h-[100px] transition-all"
           value={formData.deskripsi}
           onChange={(e) => setFormData({ ...formData, deskripsi: e.target.value })}
         />
@@ -103,9 +100,9 @@ export const MenuItemForm = ({ item, onSuccess, onCancel }: MenuItemFormProps) =
           required
         />
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-semibold text-[#1a1c19]">Kategori</label>
+          <label className="text-sm font-semibold text-ink-primary">Kategori</label>
           <select
-            className="h-12 px-4 rounded-lg bg-[#fafaf5] border-2 border-[#eeeee9] text-[#1a1c19] focus:outline-none focus:border-[#385e16]"
+            className="h-12 px-4 rounded-lg bg-surface-soft border border-surface-border text-ink-primary focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all appearance-none"
             value={formData.kategori}
             onChange={(e) => setFormData({ ...formData, kategori: e.target.value as MenuItem['kategori'] })}
           >
@@ -125,12 +122,12 @@ export const MenuItemForm = ({ item, onSuccess, onCancel }: MenuItemFormProps) =
       />
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-sm font-semibold text-[#1a1c19]">Foto Menu</label>
+        <label className="text-sm font-semibold text-ink-primary">Foto Menu</label>
         <input
           type="file"
           accept="image/*"
           onChange={(e) => setFile(e.target.files?.[0] || null)}
-          className="text-sm text-[#43493c] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#cefda3] file:text-[#2b5008] hover:file:bg-[#a6d47e]"
+          className="text-sm text-ink-secondary file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-brand-50 file:text-brand-500 hover:file:bg-brand-100 transition-all cursor-pointer"
         />
       </div>
 
@@ -138,7 +135,12 @@ export const MenuItemForm = ({ item, onSuccess, onCancel }: MenuItemFormProps) =
         <Button type="button" variant="ghost" fullWidth onClick={onCancel}>
           Batal
         </Button>
-        <Button type="submit" fullWidth loading={loading}>
+        <Button 
+          type="submit" 
+          fullWidth 
+          loading={loading}
+          className="bg-brand-500 hover:bg-brand-600 text-ink-inverse"
+        >
           Simpan
         </Button>
       </div>
