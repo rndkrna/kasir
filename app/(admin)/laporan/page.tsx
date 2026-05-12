@@ -144,7 +144,7 @@ export default function LaporanPage() {
           <div className="bg-surface-white p-6 rounded-xl border border-surface-border shadow-sm flex justify-between items-start">
             <div className="space-y-1">
               <p className="text-[10px] font-bold uppercase text-ink-secondary tracking-widest">Menu Terlaris</p>
-              <h2 className="text-xl font-bold text-ink-primary truncate w-full">{topSellingItems[0]?.name || '-'}</h2>
+              <h2 className="text-xl font-bold text-ink-primary truncate w-full">{topSellingItems[0]?.nama || '-'}</h2>
               <p className="text-[10px] font-bold text-brand-500 uppercase tracking-tight">{topSellingItems[0]?.qty || 0} unit terjual</p>
             </div>
           </div>
