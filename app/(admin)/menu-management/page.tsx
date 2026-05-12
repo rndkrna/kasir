@@ -188,7 +188,7 @@ export default function MenuManagementPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4 text-right">
-                          <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="flex justify-end gap-2 transition-opacity">
                             <button 
                               onClick={() => { setEditingItem(item); setIsMenuModalOpen(true); }} 
                               className="p-2 text-brand-600 hover:bg-brand-50 rounded-xl transition-colors border border-transparent hover:border-brand-100"

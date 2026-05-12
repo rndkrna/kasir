@@ -174,7 +174,7 @@ export default function RiwayatPage() {
                           }`}>
                             {order.status}
                           </span>
-                          <svg className="w-4 h-4 text-ink-muted opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="w-4 h-4 text-ink-muted transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </div>

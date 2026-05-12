@@ -68,13 +68,24 @@ export default function LaporanPage() {
               {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
           </div>
-          <button 
-            onClick={fetchLaporan}
-            className="p-2.5 bg-surface-white border border-surface-border rounded-lg hover:bg-surface-soft transition-all text-brand-500 shadow-sm"
-            title="Refresh Data"
-          >
-            <svg className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-          </button>
+          <div className="flex gap-2">
+            <button 
+              onClick={() => exportToCSV(dateFrom, dateTo)}
+              className="flex items-center gap-2 px-4 py-2.5 bg-ink-primary text-ink-inverse rounded-lg hover:bg-black transition-all text-xs font-bold uppercase tracking-widest shadow-md shadow-black/10"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Ekspor CSV
+            </button>
+            <button 
+              onClick={fetchLaporan}
+              className="p-2.5 bg-surface-white border border-surface-border rounded-lg hover:bg-surface-soft transition-all text-brand-500 shadow-sm"
+              title="Refresh Data"
+            >
+              <svg className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+            </button>
+          </div>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
