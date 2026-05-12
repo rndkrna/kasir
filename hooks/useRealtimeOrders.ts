@@ -20,7 +20,7 @@ export const useRealtimeOrders = () => {
         .select(`
           *,
           tables (nomor_meja),
-          order_items (*)
+          order_items (*, order_item_modifiers (*))
         `)
         .or('status.in.(baru,diproses),and(status.eq.selesai,payment_status.eq.belum_bayar)')
         .gte('created_at', today.toISOString())
@@ -46,7 +46,7 @@ export const useRealtimeOrders = () => {
             .select(`
               *,
               tables (nomor_meja),
-              order_items (*)
+              order_items (*, order_item_modifiers (*))
             `)
             .eq('id', payload.new.id)
             .single();
@@ -74,7 +74,7 @@ export const useRealtimeOrders = () => {
               .select(`
                 *,
                 tables (nomor_meja),
-                order_items (*)
+                order_items (*, order_item_modifiers (*))
               `)
               .eq('id', payload.new.id)
               .single();

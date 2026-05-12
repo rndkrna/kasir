@@ -77,14 +77,27 @@ export const OrderCard = ({ order, onUpdateStatus }: OrderCardProps) => {
       <div className="px-4 py-3 border-t border-surface-border flex-1 space-y-3">
         <div className="space-y-2.5">
           {order.order_items?.map((item) => (
-            <div key={item.id} className="flex justify-between text-sm leading-tight">
-              <div className="flex-1">
-                <p className="text-ink-primary">
-                  <span className="font-bold text-brand-500 mr-1.5">{item.qty}x</span> 
-                  <span className="font-medium">{item.nama_menu}</span>
-                </p>
+            <div key={item.id} className="space-y-1">
+              <div className="flex justify-between text-sm leading-tight">
+                <div className="flex-1">
+                  <p className="text-ink-primary">
+                    <span className="font-bold text-brand-500 mr-1.5">{item.qty}x</span> 
+                    <span className="font-medium">{item.nama_menu}</span>
+                  </p>
+                </div>
+                <span className="font-mono text-xs text-ink-secondary ml-4">{formatRupiah(item.harga_saat_pesan * item.qty)}</span>
               </div>
-              <span className="font-mono text-xs text-ink-secondary ml-4">{formatRupiah(item.harga_saat_pesan * item.qty)}</span>
+              
+              {/* Modifiers display */}
+              {item.order_item_modifiers && item.order_item_modifiers.length > 0 && (
+                <div className="flex flex-wrap gap-1 pl-6">
+                  {item.order_item_modifiers.map((mod) => (
+                    <span key={mod.id} className="text-[10px] bg-brand-50 text-brand-600 px-1.5 py-0.5 rounded-md font-bold border border-brand-100">
+                      {mod.nama_option}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>

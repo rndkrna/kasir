@@ -298,7 +298,13 @@ export default function CashierPOSPage() {
           ))}
         </div>
       </div>
-
+      <CartBar
+        totalItems={totalItems}
+        totalPrice={totalPrice}
+        notes={notes}
+        onNotesChange={setNotes}
+        onSubmit={handleSubmitOrder}
+        isSubmitting={isSubmitting}
         paymentAmount={paymentAmount}
         onPaymentAmountChange={setPaymentAmount}
       />
