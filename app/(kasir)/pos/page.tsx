@@ -21,6 +21,8 @@ export default function CashierPOSPage() {
   const [success, setSuccess] = useState(false);
   const [lastOrderId, setLastOrderId] = useState<string | null>(null);
   const [lastOrder, setLastOrder] = useState<Order | null>(null);
+  const [paymentAmount, setPaymentAmount] = useState<number>(0);
+  const [paymentInfo, setPaymentInfo] = useState<{ bayar: number; kembali: number } | null>(null);
   
   const {
     items,
@@ -114,9 +116,11 @@ export default function CashierPOSPage() {
       if (itemsError) throw itemsError;
 
       setLastOrder(orderData as any);
+      setPaymentInfo({ bayar: paymentAmount, kembali: paymentAmount - totalPrice });
       setSuccess(true);
       setLastOrderId(orderData.id);
       clearCart();
+      setPaymentAmount(0);
     } catch (error) {
       alert('Gagal memproses transaksi: ' + (error instanceof Error ? error.message : 'Unknown error'));
     } finally {
@@ -149,7 +153,7 @@ export default function CashierPOSPage() {
 
   if (success) {
     return (
-      <div className="flex flex-col items-center justify-center p-6 text-center min-h-screen bg-surface-soft">
+      <div className="flex flex-col items-center justify-start py-12 p-6 text-center min-h-screen bg-surface-soft overflow-y-auto">
         <div className="w-16 h-16 bg-status-selesai-bg rounded-full flex items-center justify-center mb-4 border border-status-selesai-border">
           <svg className="w-8 h-8 text-status-selesai-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
@@ -169,7 +173,10 @@ export default function CashierPOSPage() {
             Cetak Struk
           </button>
           <button 
-            onClick={() => setSuccess(false)} 
+            onClick={() => {
+              setSuccess(false);
+              setPaymentInfo(null);
+            }} 
             className="flex-1 bg-brand-500 hover:bg-brand-600 text-ink-inverse font-semibold text-sm px-4 py-3 rounded-lg transition-all"
           >
             Transaksi Baru
@@ -180,7 +187,7 @@ export default function CashierPOSPage() {
           <div className="w-full max-w-xs mx-auto text-left">
             <p className="text-center text-[10px] font-semibold text-ink-muted uppercase mb-3 tracking-widest">Pratinjau Struk</p>
             <div className="bg-surface-white p-1 rounded-xl border border-surface-border shadow-sm">
-              <ReceiptPreview order={lastOrder} />
+              <ReceiptPreview order={lastOrder} paymentInfo={paymentInfo || undefined} />
             </div>
           </div>
         )}
@@ -230,6 +237,8 @@ export default function CashierPOSPage() {
         onNotesChange={setNotes}
         onSubmit={handleSubmitOrder}
         isSubmitting={isSubmitting}
+        paymentAmount={paymentAmount}
+        onPaymentAmountChange={setPaymentAmount}
       />
     </div>
   );

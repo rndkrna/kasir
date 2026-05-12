@@ -5,9 +5,17 @@ import { formatRupiah } from '@/lib/utils';
 
 interface ReceiptPreviewProps {
   order: Order;
+  paymentInfo?: {
+    bayar: number;
+    kembali: number;
+  };
 }
 
-export function ReceiptPreview({ order }: ReceiptPreviewProps) {
+export function ReceiptPreview({ order, paymentInfo }: ReceiptPreviewProps) {
+  // Use payment info from props or fallback to order total (legacy)
+  const bayar = paymentInfo?.bayar ?? order.total;
+  const kembali = paymentInfo?.kembali ?? 0;
+
   return (
     <div className="bg-white p-8 shadow-inner border border-gray-200 mx-auto max-w-[350px] font-mono text-[13px] text-gray-800 leading-tight">
       {/* Header */}
@@ -65,11 +73,11 @@ export function ReceiptPreview({ order }: ReceiptPreviewProps) {
         </div>
         <div className="flex justify-between">
           <span>Bayar</span>
-          <span>{formatRupiah(order.total)}</span>
+          <span>{formatRupiah(bayar)}</span>
         </div>
         <div className="flex justify-between">
           <span>Kembali</span>
-          <span>Rp 0</span>
+          <span>{formatRupiah(kembali)}</span>
         </div>
       </div>
 

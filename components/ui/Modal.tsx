@@ -30,8 +30,9 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
       />
       
       {/* Container */}
-      <div className="relative bg-surface-white w-full max-w-md rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in slide-in-from-bottom-4 duration-300 border border-surface-border">
-        <div className="p-5 md:px-6 border-b border-surface-border flex items-center justify-between bg-surface-soft/50">
+      <div className="relative bg-surface-white w-full max-w-md max-h-[90vh] rounded-xl shadow-2xl overflow-hidden flex flex-col animate-in fade-in zoom-in slide-in-from-bottom-4 duration-300 border border-surface-border">
+        {/* Header */}
+        <div className="p-5 md:px-6 border-b border-surface-border flex items-center justify-between bg-surface-soft/50 shrink-0">
           {title && <h3 className="text-xl font-bold text-ink-primary tracking-tight font-sans">{title}</h3>}
           <button 
             onClick={onClose}
@@ -42,7 +43,9 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
             </svg>
           </button>
         </div>
-        <div className="p-6">
+
+        {/* Content - Scrollable */}
+        <div className="p-6 overflow-y-auto flex-1 font-sans">
           {children}
         </div>
       </div>
