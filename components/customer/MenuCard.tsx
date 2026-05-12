@@ -42,7 +42,7 @@ export const MenuCard = ({ item, qty, onAdd, onRemove }: MenuCardProps) => {
         <p className="text-xs text-ink-secondary line-clamp-2 mt-1 leading-snug">
           {item.deskripsi || 'Sajian spesial racikan tangan barista kami.'}
         </p>
-        <p className="text-sm font-bold text-ink-primary mt-2">
+        <p className="text-sm font-bold font-mono text-ink-primary mt-2">
           {formatRupiah(item.harga)}
         </p>
       </div>

@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body
-        className={`${plusJakartaSans.variable} ${jetBrainsMono.variable} font-sans antialiased bg-surface text-ink h-full min-h-screen`}
+        className={`${plusJakartaSans.variable} ${jetBrainsMono.variable} font-sans antialiased bg-brand-50 text-ink-primary h-full min-h-screen`}
       >
         {children}
       </body>

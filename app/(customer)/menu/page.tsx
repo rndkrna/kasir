@@ -141,26 +141,26 @@ function MenuContent() {
   }
 
   return (
-    <main className="min-h-screen bg-surface-soft pb-48 font-sans max-w-md mx-auto relative shadow-2xl shadow-black/[0.02]">
-      <header className="p-6 pb-2 sticky top-0 bg-surface-soft/90 backdrop-blur-md z-30">
-        <div className="flex justify-between items-center mb-6">
+    <main className="min-h-screen bg-brand-50 pb-48 font-sans max-w-md mx-auto relative shadow-2xl shadow-black/[0.02]">
+      <header className="p-6 pb-4 sticky top-0 bg-[#FDF8F2] z-30 border-b border-surface-border/50">
+        <div className="flex justify-between items-center mb-10">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-surface-white border border-surface-border rounded-xl flex items-center justify-center shadow-sm">
-              <span className="text-ink-primary text-sm font-bold">K</span>
+            <div className="w-8 h-8 bg-white border border-surface-border rounded-lg flex items-center justify-center">
+              <span className="text-ink-primary text-xs font-bold">K</span>
             </div>
-            <h1 className="text-xl font-bold text-ink-primary tracking-tight">KAFÉ POS</h1>
+            <h1 className="text-lg font-bold text-ink-primary tracking-tight">KAFÉ POS</h1>
           </div>
-          <div className="px-3 py-1.5 bg-surface-white border border-surface-border rounded-full shadow-sm">
+          <div className="px-4 py-1.5 bg-white border border-ink-primary rounded-full">
             <span className="text-[10px] font-bold text-ink-primary uppercase tracking-widest">Meja {tableNumber}</span>
           </div>
         </div>
         
-        <div className="mb-4">
-          <h2 className="text-3xl font-bold text-ink-primary tracking-tight">Daftar Menu</h2>
-          <p className="text-ink-secondary text-sm mt-1 leading-tight">Pilih kopi dan makanan favorit Anda hari ini.</p>
+        <div className="mb-6">
+          <h2 className="text-4xl font-bold text-ink-primary tracking-tighter">Daftar Menu</h2>
+          <p className="text-ink-secondary text-sm mt-2 leading-tight">Pilih kopi dan makanan favorit Anda hari ini.</p>
         </div>
 
-        <div className="mt-6">
+        <div className="mt-8">
           <CategoryTabs
             categories={categories}
             activeCategory={activeCategory}
@@ -169,7 +169,7 @@ function MenuContent() {
         </div>
       </header>
 
-      <div className="p-4 mt-2 space-y-12">
+      <div className="p-4 mt-6 space-y-16">
         {categories.filter(c => c !== 'semua').map(cat => {
           const itemsInCategory = filteredMenus.filter(m => m.kategori === cat);
           if (itemsInCategory.length === 0) return null;
@@ -177,7 +177,7 @@ function MenuContent() {
 
           return (
             <div key={cat} className="space-y-6">
-              <h2 className="text-sm font-bold text-ink-primary uppercase tracking-[0.2em] px-2">
+              <h2 className="text-sm font-bold text-ink-primary uppercase tracking-[0.3em] px-2">
                 {cat}
               </h2>
               <div className="grid grid-cols-1 gap-4">
