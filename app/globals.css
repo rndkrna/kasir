@@ -2,21 +2,21 @@
 
 @layer base {
   :root {
-    --background: #fafaf5;
-    --foreground: #1a1c19;
-
-    --primary: #4A6732;
-    --primary-foreground: #ffffff;
-
-    --secondary: #7d562d;
-    --secondary-foreground: #ffffff;
-
-    --surface: #fafaf5;
-    --on-surface: #1a1c19;
-
-    --radius-xl: 1rem;
-    --radius-lg: 0.75rem;
-    --radius-md: 0.5rem;
+    --background: #FDF8F2; /* brand-50 */
+    --foreground: #1A1A1A; /* ink-primary */
+    
+    --primary: #C27C3A; /* brand-500 */
+    --primary-foreground: #FFFFFF; /* ink-inverse */
+    
+    --secondary: #F3F2F0; /* surface-muted */
+    --secondary-foreground: #1A1A1A; /* ink-primary */
+    
+    --surface: #FFFFFF;
+    --on-surface: #1A1A1A;
+    
+    --radius-xl: 0.75rem;
+    --radius-lg: 0.5rem;
+    --radius-md: 0.375rem;
     --radius-sm: 0.25rem;
   }
 }
@@ -27,15 +27,12 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
+/* Custom scrollbar matching the theme */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
 
-/* Hide scrollbar for IE, Edge and Firefox */
 .scrollbar-hide {
   -ms-overflow-style: none;
-  /* IE and Edge */
   scrollbar-width: none;
-  /* Firefox */
 }

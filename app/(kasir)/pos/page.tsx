@@ -21,12 +21,7 @@ export default function CashierPOSPage() {
   const [success, setSuccess] = useState(false);
   const [lastOrderId, setLastOrderId] = useState<string | null>(null);
   const [lastOrder, setLastOrder] = useState<Order | null>(null);
-  const [user, setUser] = useState<{ email?: string; user_metadata?: { full_name?: string } } | null>(null);
   
-  // Specific POS State
-  const [selectedTableId, setSelectedTableId] = useState('');
-  const [isPaidUpfront, setIsPaidUpfront] = useState(false);
-
   const {
     items,
     notes,
@@ -67,12 +62,11 @@ export default function CashierPOSPage() {
     setIsSubmitting(true);
 
     try {
-      // 1. Get or Create "KASIR" Table
       let targetTableId = '';
       const { data: existingTable } = await supabase
         .from('tables')
         .select('id')
-        .eq('nomor_meja', 0) // Kita gunakan 0 sebagai tanda pesanan Kasir/Manual
+        .eq('nomor_meja', 0)
         .single();
 
       if (existingTable) {
@@ -87,7 +81,6 @@ export default function CashierPOSPage() {
         targetTableId = newTable.id;
       }
 
-      // 2. Insert Order
       const { data: { user } } = await supabase.auth.getUser();
       const cashierName = user?.user_metadata?.full_name || user?.email || 'Staff';
 
@@ -95,18 +88,17 @@ export default function CashierPOSPage() {
         .from('orders')
         .insert({
           table_id: targetTableId,
-          status: 'selesai', // Langsung Selesai
-          payment_status: 'sudah_bayar', // Langsung Lunas
+          status: 'selesai',
+          payment_status: 'sudah_bayar',
           total: totalPrice,
           catatan: notes,
           kasir_name: cashierName,
         })
-        .select()
+        .select('*, tables(*)')
         .single();
 
       if (orderError || !orderData) throw orderError;
 
-      // 3. Insert Order Items
       const orderItems = items.map((item) => ({
         order_id: orderData.id,
         menu_id: item.id,
@@ -121,9 +113,9 @@ export default function CashierPOSPage() {
 
       if (itemsError) throw itemsError;
 
-      // Success
+      setLastOrder(orderData as any);
       setSuccess(true);
-      setLastOrderId(orderData.id); // Simpan ID untuk cetak struk
+      setLastOrderId(orderData.id);
       clearCart();
     } catch (error) {
       alert('Gagal memproses transaksi: ' + (error instanceof Error ? error.message : 'Unknown error'));
@@ -149,7 +141,7 @@ export default function CashierPOSPage() {
 
   if (loading) {
     return (
-      <div className="p-8 flex justify-center">
+      <div className="p-8 flex justify-center bg-surface-soft min-h-screen">
         <div className="w-8 h-8 border-4 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
@@ -157,38 +149,37 @@ export default function CashierPOSPage() {
 
   if (success) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 text-center h-[60vh]">
-        <div className="w-20 h-20 bg-brand-100 rounded-full flex items-center justify-center mb-4">
-          <svg className="w-10 h-10 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="flex flex-col items-center justify-center p-6 text-center min-h-screen bg-surface-soft">
+        <div className="w-16 h-16 bg-status-selesai-bg rounded-full flex items-center justify-center mb-4 border border-status-selesai-border">
+          <svg className="w-8 h-8 text-status-selesai-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h1 className="text-2xl font-black text-ink-primary mb-2">Transaksi Selesai!</h1>
-        <p className="text-ink-secondary">Pembayaran telah diterima dan tercatat di riwayat.</p>
+        <h1 className="text-2xl font-bold text-ink-primary mb-2">Transaksi Selesai!</h1>
+        <p className="text-sm text-ink-secondary mb-8">Pembayaran telah diterima dan tercatat di riwayat.</p>
         
-        <div className="flex flex-col sm:flex-row gap-4 mt-8 mb-12">
+        <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm mb-12">
           <button 
             onClick={handlePrint} 
-            className="bg-ink-primary text-white px-8 py-3 rounded-2xl font-black shadow-lg flex items-center gap-2 hover:bg-black transition-all"
+            className="flex-1 bg-ink-primary hover:bg-black text-ink-inverse font-semibold text-sm px-4 py-3 rounded-lg transition-all flex items-center justify-center gap-2"
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
             </svg>
             Cetak Struk
           </button>
           <button 
             onClick={() => setSuccess(false)} 
-            className="bg-brand-500 text-white px-8 py-3 rounded-2xl font-black shadow-lg shadow-brand-500/20 hover:bg-brand-600 transition-all"
+            className="flex-1 bg-brand-500 hover:bg-brand-600 text-ink-inverse font-semibold text-sm px-4 py-3 rounded-lg transition-all"
           >
-            Input Transaksi Baru
+            Transaksi Baru
           </button>
         </div>
 
-        {/* Receipt Preview Section */}
         {lastOrder && (
-          <div className="w-full max-w-md mx-auto text-left">
-            <p className="text-center text-xs font-bold text-ink-muted uppercase mb-4 tracking-widest">Pratinjau Struk Digital</p>
-            <div className="bg-surface-muted p-4 sm:p-8 rounded-3xl overflow-hidden border border-surface-border">
+          <div className="w-full max-w-xs mx-auto text-left">
+            <p className="text-center text-[10px] font-semibold text-ink-muted uppercase mb-3 tracking-widest">Pratinjau Struk</p>
+            <div className="bg-surface-white p-1 rounded-xl border border-surface-border shadow-sm">
               <ReceiptPreview order={lastOrder} />
             </div>
           </div>
@@ -198,38 +189,38 @@ export default function CashierPOSPage() {
   }
 
   return (
-    <div className="p-6 pb-40 space-y-6 max-w-5xl mx-auto font-sans">
-      {/* Artisan Brews POS Header */}
-      <div className="bg-surface-white p-6 rounded-2xl border border-surface-border shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-brand-500 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/20">
-            <span className="text-white text-xl font-black">K</span>
-          </div>
-          <div>
-            <h1 className="text-2xl font-black text-ink-primary tracking-tight">KAFÉ POS</h1>
-            <p className="text-sm text-ink-secondary">Pesan langsung di kasir (Counter Order)</p>
+    <div className="min-h-screen bg-surface-soft pb-40">
+      <div className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
+        {/* Header */}
+        <div className="bg-surface-white p-4 md:p-5 rounded-xl border border-surface-border shadow-sm flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 bg-brand-500 rounded-lg flex items-center justify-center shadow-sm">
+              <span className="text-white text-lg font-bold">K</span>
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-ink-primary">KAFÉ POS</h1>
+              <p className="text-xs text-ink-secondary">Pesan langsung di kasir</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="px-2">
         <CategoryTabs
           categories={categories}
           activeCategory={activeCategory}
           onSelect={setActiveCategory}
         />
-      </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-2">
-        {filteredMenus.map((menu) => (
-          <MenuCard
-            key={menu.id}
-            item={menu}
-            qty={items.find((i) => i.id === menu.id)?.qty || 0}
-            onAdd={addToCart}
-            onRemove={removeFromCart}
-          />
-        ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+          {filteredMenus.map((menu) => (
+            <MenuCard
+              key={menu.id}
+              item={menu}
+              qty={items.find((i) => i.id === menu.id)?.qty || 0}
+              onAdd={addToCart}
+              onRemove={removeFromCart}
+            />
+          ))}
+        </div>
       </div>
 
       <CartBar
