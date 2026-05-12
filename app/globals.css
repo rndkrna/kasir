@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: #fafaf5;
+    --foreground: #1a1c19;
+
+    --primary: #4A6732;
+    --primary-foreground: #ffffff;
+
+    --secondary: #7d562d;
+    --secondary-foreground: #ffffff;
+
+    --surface: #fafaf5;
+    --on-surface: #1a1c19;
+
+    --radius-xl: 1rem;
+    --radius-lg: 0.75rem;
+    --radius-md: 0.5rem;
+    --radius-sm: 0.25rem;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
